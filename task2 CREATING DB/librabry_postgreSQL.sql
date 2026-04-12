@@ -83,9 +83,8 @@ CREATE TABLE library_staff (
     record_ts  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ----------------------------------------------------------------
+
 -- LOANS
--- ----------------------------------------------------------------
 CREATE TABLE loans (
     loan_id     SERIAL PRIMARY KEY,
     catalog_id  INT,
