@@ -1,14 +1,16 @@
+CREATE SCHEMA IF NOT EXISTS library_physical_db;
+
+SET search_path TO library_physical_db;
+
 DROP TABLE IF EXISTS reservations, fines, loans, library_staff, borrowers, catalog, book_authors, books, authors, genres CASCADE;
 
-
-CREATE TABLE genres (
+CREATE TABLE IF NOT EXISTS genres (
     genre_id   SERIAL PRIMARY KEY,
     genre_name VARCHAR(50) NOT NULL UNIQUE,
     record_ts  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
-CREATE TABLE authors (
+CREATE TABLE IF NOT EXISTS authors (
     author_id   SERIAL PRIMARY KEY,
     first_name  VARCHAR(50) NOT NULL,
     last_name   VARCHAR(50) NOT NULL,
@@ -17,8 +19,7 @@ CREATE TABLE authors (
     record_ts   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
-CREATE TABLE books (
+CREATE TABLE IF NOT EXISTS books (
     book_id        SERIAL PRIMARY KEY,
     title          VARCHAR(200) NOT NULL,
     isbn           VARCHAR(20)  UNIQUE NOT NULL,
@@ -28,8 +29,7 @@ CREATE TABLE books (
     CONSTRAINT fk_book_genre FOREIGN KEY (genre_id) REFERENCES genres(genre_id)
 );
 
-
-CREATE TABLE book_authors (
+CREATE TABLE IF NOT EXISTS book_authors (
     book_id   INT,
     author_id INT,
     record_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -38,8 +38,7 @@ CREATE TABLE book_authors (
     CONSTRAINT fk_ba_author FOREIGN KEY (author_id) REFERENCES authors(author_id) ON DELETE CASCADE
 );
 
-
-CREATE TABLE catalog (
+CREATE TABLE IF NOT EXISTS catalog (
     catalog_id     SERIAL PRIMARY KEY,
     book_id        INT,
     shelf_location VARCHAR(20) NOT NULL,
@@ -50,8 +49,7 @@ CREATE TABLE catalog (
     CONSTRAINT fk_catalog_book   FOREIGN KEY (book_id) REFERENCES books(book_id)
 );
 
-
-CREATE TABLE borrowers (
+CREATE TABLE IF NOT EXISTS borrowers (
     borrower_id       SERIAL PRIMARY KEY,
     first_name        VARCHAR(50)  NOT NULL,
     last_name         VARCHAR(50)  NOT NULL,
@@ -62,8 +60,7 @@ CREATE TABLE borrowers (
     record_ts         TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
-CREATE TABLE library_staff (
+CREATE TABLE IF NOT EXISTS library_staff (
     staff_id   SERIAL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     last_name  VARCHAR(50) NOT NULL,
@@ -75,8 +72,7 @@ CREATE TABLE library_staff (
     record_ts  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-
-CREATE TABLE loans (
+CREATE TABLE IF NOT EXISTS loans (
     loan_id     SERIAL PRIMARY KEY,
     catalog_id  INT,
     borrower_id INT,
@@ -91,8 +87,7 @@ CREATE TABLE loans (
     CONSTRAINT fk_loan_staff     FOREIGN KEY (staff_id)    REFERENCES library_staff(staff_id)
 );
 
-
-CREATE TABLE fines (
+CREATE TABLE IF NOT EXISTS fines (
     fine_id   SERIAL PRIMARY KEY,
     loan_id   INT UNIQUE,
     amount    NUMERIC(10,2) NOT NULL DEFAULT 0.00 CHECK (amount >= 0),
@@ -102,8 +97,7 @@ CREATE TABLE fines (
     CONSTRAINT fk_fine_loan FOREIGN KEY (loan_id) REFERENCES loans(loan_id)
 );
 
-
-CREATE TABLE reservations (
+CREATE TABLE IF NOT EXISTS reservations (
     reservation_id   SERIAL PRIMARY KEY,
     book_id          INT,
     borrower_id      INT,
@@ -114,7 +108,6 @@ CREATE TABLE reservations (
     CONSTRAINT fk_res_book     FOREIGN KEY (book_id)     REFERENCES books(book_id),
     CONSTRAINT fk_res_borrower FOREIGN KEY (borrower_id) REFERENCES borrowers(borrower_id)
 );
-
 
 INSERT INTO genres (genre_name) VALUES
     ('Classic'), ('Fantasy'), ('Science Fiction'),
