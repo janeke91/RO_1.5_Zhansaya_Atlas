@@ -1,8 +1,6 @@
--- Drop tables if they exist (reverse dependency order)
 DROP TABLE IF EXISTS reservations, fines, loans, library_staff, borrowers, catalog, book_authors, books, authors, genres CASCADE;
 
 
--- GENRES
 CREATE TABLE genres (
     genre_id   SERIAL PRIMARY KEY,
     genre_name VARCHAR(50) NOT NULL UNIQUE,
@@ -10,7 +8,6 @@ CREATE TABLE genres (
 );
 
 
--- AUTHORS
 CREATE TABLE authors (
     author_id   SERIAL PRIMARY KEY,
     first_name  VARCHAR(50) NOT NULL,
@@ -21,7 +18,6 @@ CREATE TABLE authors (
 );
 
 
--- BOOKS
 CREATE TABLE books (
     book_id        SERIAL PRIMARY KEY,
     title          VARCHAR(200) NOT NULL,
@@ -44,7 +40,6 @@ CREATE TABLE book_authors (
 );
 
 
--- CATALOG
 CREATE TABLE catalog (
     catalog_id     SERIAL PRIMARY KEY,
     book_id        INT,
@@ -57,7 +52,6 @@ CREATE TABLE catalog (
 );
 
 
--- BORROWERS
 CREATE TABLE borrowers (
     borrower_id       SERIAL PRIMARY KEY,
     first_name        VARCHAR(50)  NOT NULL,
@@ -70,7 +64,6 @@ CREATE TABLE borrowers (
 );
 
 
--- LIBRARY_STAFF
 CREATE TABLE library_staff (
     staff_id   SERIAL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
@@ -84,7 +77,6 @@ CREATE TABLE library_staff (
 );
 
 
--- LOANS
 CREATE TABLE loans (
     loan_id     SERIAL PRIMARY KEY,
     catalog_id  INT,
@@ -101,7 +93,6 @@ CREATE TABLE loans (
 );
 
 
--- FINES
 CREATE TABLE fines (
     fine_id   SERIAL PRIMARY KEY,
     loan_id   INT UNIQUE,
@@ -113,7 +104,6 @@ CREATE TABLE fines (
 );
 
 
--- RESERVATIONS
 CREATE TABLE reservations (
     reservation_id   SERIAL PRIMARY KEY,
     book_id          INT,
@@ -127,7 +117,6 @@ CREATE TABLE reservations (
 );
 
 
--- SEED DATA
 INSERT INTO genres (genre_name) VALUES
     ('Classic'), ('Fantasy'), ('Science Fiction'),
     ('Mystery'), ('History'), ('Biography');
