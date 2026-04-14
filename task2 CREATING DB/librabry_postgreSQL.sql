@@ -29,7 +29,6 @@ CREATE TABLE books (
 );
 
 
--- BOOK_AUTHORS  (junction table)
 CREATE TABLE book_authors (
     book_id   INT,
     author_id INT,
