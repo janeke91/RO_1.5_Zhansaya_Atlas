@@ -82,4 +82,51 @@ CREATE TABLE IF NOT EXISTS loans (
     return_date DATE,
     record_ts   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT fk_loan_catalog   FOREIGN KEY (catalog_id)  REFERENCES catalog(catalog_id),
-    CONSTRAINT fk_loan_borrower  FOREIGN KEY (borrower_id)
+    CONSTRAINT fk_loan_borrower  FOREIGN KEY (borrower_id) REFERENCES borrowers(borrower_id),
+    CONSTRAINT fk_loan_staff     FOREIGN KEY (staff_id)    REFERENCES library_staff(staff_id)
+);
+
+CREATE TABLE IF NOT EXISTS fines (
+    fine_id   SERIAL PRIMARY KEY,
+    loan_id   INT UNIQUE,
+    amount    NUMERIC(10,2) NOT NULL DEFAULT 0.00 CHECK (amount >= 0),
+    paid_date DATE,
+    status    VARCHAR(20) NOT NULL,
+    record_ts TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_fine_loan FOREIGN KEY (loan_id) REFERENCES loans(loan_id)
+);
+
+CREATE TABLE IF NOT EXISTS reservations (
+    reservation_id   SERIAL PRIMARY KEY,
+    book_id          INT,
+    borrower_id      INT,
+    reservation_date DATE NOT NULL,
+    status           VARCHAR(20) NOT NULL,
+    res_type         VARCHAR(20) NOT NULL CHECK (res_type IN ('Online', 'Physical')),
+    record_ts        TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_res_book     FOREIGN KEY (book_id)     REFERENCES books(book_id),
+    CONSTRAINT fk_res_borrower FOREIGN KEY (borrower_id) REFERENCES borrowers(borrower_id)
+);
+
+INSERT INTO genres (genre_name) VALUES ('Classic'), ('Fantasy'), ('Science Fiction');
+
+INSERT INTO authors (first_name, last_name, birth_date, nationality) VALUES
+    ('Abai', 'Kunanbayuly', '1845-08-10', 'Kazakh'),
+    ('J.K.', 'Rowling', '1965-07-31', 'British');
+
+INSERT INTO books (title, isbn, year_published, genre_id) VALUES
+    ('The Book of Words', '978-0001', 1890, 1),
+    ('Harry Potter', '978-0003', 1997, 2);
+
+INSERT INTO catalog (book_id, shelf_location, section, status) VALUES
+    (1, 'A-10', 'Kazakh Literature', 'Available'),
+    (2, 'B-01', 'Foreign Fiction', 'Available');
+
+INSERT INTO borrowers (first_name, last_name, email, phone, address, registration_date) VALUES
+    ('Arman', 'Sabit', 'arman.s@mail.kz', '+77011112233', 'Atyrau', '2026-02-10');
+
+INSERT INTO library_staff (first_name, last_name, email, phone, iin, role, hire_date) VALUES
+    ('Ivan', 'Ivanov', 'ivan.i@lib.kz', '+77001234567', '123456789012', 'Manager', '2026-01-10');
+
+INSERT INTO loans (catalog_id, borrower_id, staff_id, loan_date) VALUES
+    (1, 1, 1, '2026-06-01');
